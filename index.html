@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Functional Programming is not just Lambda Functions</title>
+		<meta name="description" content="">
+		<meta name="author" content="David Sferruzza">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/sp.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName('head')[0].appendChild(link);
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown data-separator="^\r?\n---\r?\n$">
+					<textarea data-template>
+# Functional Programming is not just Lambda Functions
+## David Sferruzza
+### 2017-05-17
+
+---
+
+# About me
+
+- [@d_sferruzza](https://twitter.com/d_sferruzza)
+- [github.com/dsferruzza](https://github.com/dsferruzza)
+- Head of Research and Development at [Startup Palace](https://www.startup-palace.com)
+- PhD student in software engineering at *University of Nantes*
+
+![](img/sp.gif) <!-- .element: class="stretch" -->
+
+					</textarea>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<script src="plugin/markdown/marked.js"></script>
+
+		<script>
+			function paragraphRenderer(text) {
+				var singleImage = text.match(/^(<img src=".+" alt=".*">)(\s*<!--.+-->)?$/);
+				if (singleImage !== null) {
+					var comment = (typeof singleImage[2] === 'string') ? singleImage[2] : '';
+					return '<figure>' + singleImage[1] + '</figure>' + comment;
+				}
+				else {
+					return '<p>' + text + '</p>\n';
+				}
+			}
+			var patchedRenderer = new marked.Renderer();
+			patchedRenderer.paragraph = paragraphRenderer;
+
+			Reveal.initialize({
+				slideNumber: true,
+				history: true,
+				transition: 'none',
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+				],
+				markdown: {
+					renderer: patchedRenderer,
+				}
+			});
+		</script>
+	</body>
+</html>
