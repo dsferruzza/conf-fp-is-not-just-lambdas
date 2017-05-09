@@ -60,7 +60,6 @@
 				var singleImage = text.match(/^(<img src=".+" alt=".*">)(\s*<!--.+-->)?$/);
 				if (singleImage !== null) {
 					var stretchComment = (typeof singleImage[2] === 'string') ? singleImage[2].match(/^\s*<!--\s*\.element:\s*(.*?)\s*(class\s*=\s*"stretch")\s*(.*?)\s*-->$/) : null;
-					console.log(stretchComment);
 					if (stretchComment !== null && typeof stretchComment[2] === 'string') {
 						var comment = '<!-- .element: ' + ((typeof stretchComment[1] === 'string') ? stretchComment[1] : '') + ' ' + ((typeof stretchComment[3] === 'string') ? stretchComment[3] : '') + ' -->';
 						return '<figure class="stretch">' + singleImage[1] + comment + '</figure>';
@@ -91,7 +90,7 @@
 				],
 				markdown: {
 					renderer: patchedRenderer,
-				}
+				},
 			});
 		</script>
 	</body>
