@@ -57,8 +57,16 @@
 			function paragraphRenderer(text) {
 				var singleImage = text.match(/^(<img src=".+" alt=".*">)(\s*<!--.+-->)?$/);
 				if (singleImage !== null) {
-					var comment = (typeof singleImage[2] === 'string') ? singleImage[2] : '';
-					return '<figure>' + singleImage[1] + '</figure>' + comment;
+					var stretchComment = (typeof singleImage[2] === 'string') ? singleImage[2].match(/^\s*<!--\s*\.element:\s*(.*?)\s*(class\s*=\s*"stretch")\s*(.*?)\s*-->$/) : null;
+					console.log(stretchComment);
+					if (stretchComment !== null && typeof stretchComment[2] === 'string') {
+						var comment = '<!-- .element: ' + ((typeof stretchComment[1] === 'string') ? stretchComment[1] : '') + ' ' + ((typeof stretchComment[3] === 'string') ? stretchComment[3] : '') + ' -->';
+						return '<figure class="stretch">' + singleImage[1] + comment + '</figure>';
+					}
+					else {
+						var comment = (typeof singleImage[2] === 'string') ? singleImage[2] : '';
+						return '<figure>' + singleImage[1] + comment + '</figure>';
+					}
 				}
 				else {
 					return '<p>' + text + '</p>\n';
