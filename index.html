@@ -124,6 +124,626 @@ Let's explore some FP concepts:
 - immutability
 
 and apply them with JS!
+
+---
+
+# Impure function
+
+```javascript
+function divideByTwo(number) {
+  var rightNow = new Date();
+  launchNuke(rightNow);
+  return number / 2;
+}
+```
+
+This function has *observable* **side-effects** (obviously).
+But this can't be guessed by looking to its signature.
+So we need to be very careful when manipulating it!
+
+![](img/fail.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Pure function
+
+```javascript
+function addFive(number) {
+  return number + 5;
+}
+```
+
+This function has no side-effects.
+It **always** returns the same result when given the same arguments.
+
+```javascript
+addFive(-4) === addFive(-4)
+```
+
+![](img/excellent.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Referential transparency
+
+> An expression is said to be referentially transparent if it can be replaced with its corresponding value without changing the program's behavior.
+
+Using pure functions allows to **reason** on programs as if they were equations.
+
+![](img/mindblown.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Advice
+
+## Build your programs with pure functions wherever possible
+
+Business logic should be reliable and easily testable.
+
+## Isolate functions with side-effects
+
+We want to know which functions can make side-effect, so we can be careful when calling them.
+
+---
+
+# Concepts
+
+- ~~referential transparency~~
+- higher-order functions
+- lazy evaluation
+- immutability
+
+---
+
+# Higher-order functions
+
+An higher-order function is just a function that verify at least one of the following properties:
+- it takes one or more functions as arguments
+- it returns a function as its result
+
+![](img/inception.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Example
+
+```javascript
+function applyTwice(f, x) {
+  return f(f(x));
+}
+// ^ takes a function as argument
+
+function timesThree(x) {
+  return x * 3;
+}
+
+applyTwice(timesThree, 7);
+// timesThree(timesThree(7))
+// timesThree(21)
+// 63
+```
+
+---
+
+# What's the point?
+
+- having a good *separation of concerns*
+- creating complex functions by composing simple functions
+
+![](img/lego.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Play time!
+
+Let's apply our knowledge of higher-order functions by manipulating JS arrays and magical ponies!
+
+![](img/party.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Context
+
+```javascript
+var ponies = [
+  { name: "Rainbow Dash", color: "purple",
+    flying: true },
+  { name: "Applejack", color: "orange",
+    flying: false },
+  { name: "Fluttershy", color: "yellow",
+    flying: true },
+];
+```
+
+We want to get a list of string formatted like this:
+
+`name (color)`
+
+---
+
+# Context
+
+We will write a `displayPonies` function so that:
+
+```javascript
+displayPonies(ponies);
+// [ "Rainbow Dash (purple)",
+//   "Applejack (orange)",
+//   "Fluttershy (yellow)" ]
+```
+
+---
+
+# Imperative solution
+
+```javascript
+function displayPonies(ponies) {
+  for (var i = 0; i < ponies.length; i++) {
+    ponies[i] = ponies[i].name +
+                " (" + ponies[i].color + ")";
+  }
+  return ponies;
+}
+```
+
+We are mixing 2 behaviors:
+
+- iterating on an array
+- transforming our data
+
+---
+
+# Array.map
+
+```javascript
+function displayPonies(ponies) {
+  function transformation(pony) {
+    return pony.name +
+           " (" + pony.color + ")";
+  }
+  return ponies.map(transformation);
+}
+```
+
+- `Array.map` handles array iteration \o/
+- we handle the transformation
+
+---
+
+
+# With ES6 syntax
+
+Let's use *lambda functions* and *template strings*!
+
+```javascript
+ponies.map(p => `${p.name} (${p.color})`);
+// [ "Rainbow Dash (purple)",
+//   "Applejack (orange)",
+//   "Fluttershy (yellow)" ]
+```
+
+![](img/shocked.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Array.filter
+
+```javascript
+ponies.filter(function(pony) {
+  // If a pony cannot fly, return true
+  // If it can, return false
+  return !pony.flying;
+});
+// [ { name: "Applejack", color: "orange",
+//     flying: false } ]
+```
+
+---
+
+# Let's chain!
+
+```javascript
+ponies.filter(function(pony) {
+  return pony.flying;
+}).map(function(pony) {
+  return pony.name + " (" + pony.color + ")";
+});
+// [ "Rainbow Dash (purple)",
+//   "Fluttershy (yellow)" ]
+```
+
+*Reminder: `Array.map` and `Array.filter` are higher-order functions.*
+
+---
+
+# Array.reduce
+
+```javascript
+var people = [
+  { name: "Bruce", age: 30 },
+  { name: "Tony", age: 35 },
+  { name: "Peter", age: 26 },
+];
+
+people.reduce(function(acc, cur) {
+  return acc + cur.age;
+}, 0);
+// --> 91
+```
+
+---
+
+# Array.reduce
+
+```javascript
+function map(array, transformation) {
+  return array.reduce(function(acc, cur) {
+    acc.push(transformation(cur));
+    return acc;
+  }, []);
+}
+
+function filter(array, predicate) {
+  return array.reduce(function(acc, cur) {
+    if (predicate(cur)) acc.push(cur);
+    return acc;
+  }, []);
+}
+```
+
+---
+
+# Advice
+
+Avoid using loops to manipulate arrays.
+
+## Cheat sheet
+
+If you have an array and you want to:
+
+- apply a transformation to each of its elements (keeping their order/number): **map**
+- remove some of its elements (keeping order and value of the others): **filter**
+- scan it to build a new data structure: **fold/reduce**
+
+---
+
+# Concepts
+
+- ~~referential transparency~~
+- ~~higher-order functions~~
+- lazy evaluation
+- immutability
+
+---
+
+# Evaluation strategy
+
+- **when** to evaluate the arguments of a function call
+- **what kind of value** to pass to the function
+
+
+```javascript
+myFunction(lower("WHATEVER"))
+//         ^ When to evaluate this?
+// What to give to the body of myFunction?
+```
+
+![](img/bean.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Strict evaluation
+
+*eager evaluation, greedy evaluation*
+
+- **when:** as soon as possible
+- **what kind of value:**
+	- *call by value*
+	- *call by reference*
+	- *call by sharing*
+	- ...
+
+---
+
+# Non-strict evaluation
+
+*lazy evaluation*
+
+- **call by name:** arguments are substituted directly into the function body
+- **call by need:** same, with *memoization* (≈ *if* an argument is evaluated, its value is cached)
+- ...
+
+---
+
+# Lazy evaluation
+
+Delays the evaluation of an expression until its value is needed.
+
+![](img/clean.gif) <!-- .element: class="stretch" -->
+
+---
+
+# What's the point?
+
+- **optimization:** avoid useless computation
+- **maintainability:**
+	- it is possible to express infinite data structures
+	- it is possible to define control structures as abstractions, instead of primitives
+
+---
+
+# Lo-Dash
+
+> A JavaScript utility library delivering consistency, modularity, performance, & extras.
+
+<https://lodash.com/>
+
+- a JS library that allows to manipulate collections
+- *lazy* since version 3
+
+---
+
+# Example
+
+```javascript
+var list = [0, 1, 2, 3, 4];
+
+function addOne(nb) {
+  console.log(nb + ' + 1');
+  if (nb > 2) console.log('Slow');
+  return nb + 1;
+}
+
+function isSmall(nb) {
+  console.log(nb + ' smaller than 3?');
+  return nb < 3;
+}
+```
+
+---
+
+# Without Lo-Dash
+
+```javascript
+var js = list
+           .map(addOne)
+           .filter(isSmall)
+           .slice(0, 2);
+```
+
+```text
+0 + 1
+1 + 1
+2 + 1
+3 + 1
+Slow
+4 + 1
+Slow
+1 smaller than 3?
+2 smaller than 3?
+3 smaller than 3?
+4 smaller than 3?
+5 smaller than 3?
+[ 1, 2 ]
+```
+<!-- .element: class="smallcode" -->
+
+---
+
+# With Lo-Dash
+
+```javascript
+var _ = require('lodash');
+var lodash = _(list)
+               .map(addOne)
+               .filter(isSmall)
+               .take(2)
+               .value();
+```
+
+```text
+0 + 1
+1 smaller than 3?
+1 + 1
+2 smaller than 3?
+[ 1, 2 ]
+```
+<!-- .element: class="smallcode" -->
+
+---
+
+# Without Lo-Dash
+
+![](img/without-lodash.gif) <!-- .element: class="stretch" -->
+
+---
+
+# With Lo-Dash
+
+![](img/with-lodash.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Lazy evaluation
+
+- separation of
+	- definition *→ where computations are defined?*
+	- execution *→ when values are computed?*
+- *glue* that allows to assemble pieces of programs efficiently
+
+**Pros:** can help us achieve better maintainability *and* performances
+
+**Cons:** can introduce some *overhead* (depending on the technology)
+
+---
+
+# Concepts
+
+- ~~referential transparency~~
+- ~~higher-order functions~~
+- ~~lazy evaluation~~
+- immutability
+
+---
+
+# Immutability
+
+> An immutable object is an object whose state cannot be modified after it is created.
+
+![](img/good.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Immutable in JS
+
+- booleans
+- numbers
+- strings
+
+```javascript
+var n = 10;
+n = 10 + 1;
+```
+
+We just changed the reference (`n`), not the actual data (`10`).
+
+`10 + 1` does not modify `10` neither `1`.
+
+---
+
+# Mutable in JS
+
+- objects
+- (which implies) arrays
+
+```javascript
+var object = {
+	a: 1,
+	b: 'BATMAN',
+};
+var alias = object;
+
+object.a = 2;
+object // { a: 2, b: 'BATMAN' }
+alias // { a: 2, b: 'BATMAN' }
+```
+
+---
+
+# const != immutable
+
+```javascript
+const object = {
+	a: 1,
+	b: 'BATMAN',
+};
+const alias = object;
+
+object.a = 2;
+object // { a: 2, b: 'BATMAN' }
+alias // { a: 2, b: 'BATMAN' }
+```
+
+`const` prevent us from modifying **references**, not values!
+
+*`const` is nice though ;)*
+
+---
+
+# Immutable.js
+
+> Immutable persistent data collections for Javascript which increase efficiency and simplicity.
+
+<https://facebook.github.io/immutable-js/>
+
+- a library that gives us a API for immutable collections
+- List, Stack, [Ordered]Map, [Ordered]Set, Record, ...
+
+---
+
+# Immutable.js
+
+```javascript
+const Immutable = require('immutable');
+
+var map1 = Immutable.Map({a:1, b:2, c:3});
+var map2 = map1.set('b', 50);
+map1.get('b'); // 2
+map2.get('b'); // 50
+
+var map3 = map2.set('b', 2);
+map1.equals(map3); // true
+```
+
+*Careful: do not confuse `Map` (data structure) and `map` (function)!*
+
+---
+
+# Pros
+
+- readability/maintainability: 1 value per reference
+- no side-effects
+- *thread safe*
+
+But what about performances?
+
+![](img/suspicious.gif) <!-- .element: class="stretch" -->
+
+---
+
+# Performances
+
+Introduces some *overhead*, but the balance maintainability vs. performance is often good.
+
+![](img/tree.png) <!-- .element: class="stretch" -->
+
+---
+
+# Advice
+
+## Use `const`
+
+And use `let` when you cannot use `const`.
+Do not use `var`.
+
+## Avoid to create/use mutable API
+
+A function that modifies an object should return a new object, not modify it secretly.
+
+```javascript
+const list = [1, 2, 3];
+list.push(4);
+//   ^ side-effect
+```
+
+---
+
+# Concepts
+
+- ~~referential transparency~~
+- ~~higher-order functions~~
+- ~~lazy evaluation~~
+- ~~immutability~~
+
+---
+
+# Going further
+
+- [Why Functional Programming Matters](http://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf): why higher-order functions and lazy evaluation are great tools to write modular programs
+- [JavaScript Alongé](https://leanpub.com/javascriptallongesix): a advanced book on JavaScript that explains some of the concepts we saw today
+- [Is your programming language unreasonable?](http://fsharpforfunandprofit.com/posts/is-your-language-unreasonable/): why predictability of programming languages is important
+
+---
+
+# Questions?
+
+![](img/question.gif) <!-- .element: class="stretch" -->
+
+Twitter: [@d_sferruzza](https://twitter.com/d_sferruzza)
+
+Slides are on GitHub:
+
+[dsferruzza/conf-fp-is-not-just-lambdas](http://github.com/dsferruzza/conf-fp-is-not-just-lambdas)
 					</textarea>
 				</section>
 			</div>
