@@ -182,7 +182,7 @@ Business logic should be reliable and easily testable.
 
 ## Isolate functions with side-effects
 
-We want to know which functions can make side-effect, so we can be careful when calling them.
+We want to know which functions can make side-effects, so we can be careful when calling them.
 
 ---
 
@@ -197,7 +197,7 @@ We want to know which functions can make side-effect, so we can be careful when 
 
 # Higher-order functions
 
-An higher-order function is just a function that verify at least one of the following properties:
+An higher-order function is just a function that verifies at least one of the following properties:
 - it takes one or more functions as arguments
 - it returns a function as its result
 
@@ -255,7 +255,7 @@ var ponies = [
 ];
 ```
 
-We want to get a list of string formatted like this:
+We want to get a list of strings formatted like this:
 
 `name (color)`
 
@@ -305,7 +305,7 @@ function displayPonies(ponies) {
 }
 ```
 
-- `Array.map` handles array iteration \o/
+- `Array.map` handles array iteration for us \o/
 - we handle the transformation
 
 ---
@@ -418,8 +418,8 @@ If you have an array and you want to:
 
 # Evaluation strategy
 
-- **when** to evaluate the arguments of a function call
-- **what kind of value** to pass to the function
+- **when** to evaluate the arguments of a function call?
+- **what kind of value** to pass to the function?
 
 
 ```javascript
@@ -465,7 +465,7 @@ Delays the evaluation of an expression until its value is needed.
 
 # What's the point?
 
-- **optimization:** avoid useless computation
+- **optimization:** avoid useless computations
 - **maintainability:**
 	- it is possible to express infinite data structures
 	- it is possible to define control structures as abstractions, instead of primitives
@@ -567,7 +567,7 @@ var lodash = _(list)
 # Lazy evaluation
 
 - separation of
-	- definition *→ where computations are defined?*
+	- definition *→ how computations are defined?*
 	- execution *→ when values are computed?*
 - *glue* that allows to assemble pieces of programs efficiently
 
