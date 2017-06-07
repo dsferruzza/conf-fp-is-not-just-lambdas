@@ -503,10 +503,10 @@ function isSmall(nb) {
 # Without Lo-Dash
 
 ```javascript
-var js = list
-           .map(addOne)
-           .filter(isSmall)
-           .slice(0, 2);
+var result = list
+               .map(addOne)
+               .filter(isSmall)
+               .slice(0, 2);
 ```
 
 ```text
@@ -532,7 +532,7 @@ Slow
 
 ```javascript
 var _ = require('lodash');
-var lodash = _(list)
+var result = _(list)
                .map(addOne)
                .filter(isSmall)
                .take(2)
@@ -589,23 +589,6 @@ var lodash = _(list)
 > An immutable object is an object whose state cannot be modified after it is created.
 
 ![](img/good.gif) <!-- .element: class="stretch" -->
-
----
-
-# Immutable in JS
-
-- booleans
-- numbers
-- strings
-
-```javascript
-var n = 10;
-n = 10 + 1;
-```
-
-We just changed the reference (`n`), not the actual data (`10`).
-
-`10 + 1` does not modify `10` neither `1`.
 
 ---
 
